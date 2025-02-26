@@ -4,16 +4,36 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyApp createState() => _MyApp();
+}
+
+class _MyApp extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void toggletheme(bool islight) {
+    setState(() {
+      _themeMode = islight ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: FadingTextAnimation(),
+      debugShowCheckedModeBanner: false,
+      themeMode: _themeMode,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: FadingTextAnimation(toggletheme: toggletheme),
     );
   }
 }
 
 class FadingTextAnimation extends StatefulWidget {
+  final Function(bool) toggletheme;
+  FadingTextAnimation({required this.toggletheme});
+
   @override
   _FadingTextAnimationState createState() => _FadingTextAnimationState();
 }
@@ -31,6 +51,16 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fading Text Animation'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.light_mode),
+            onPressed: () => widget.toggletheme(true),
+          ),
+          IconButton(
+            icon: Icon(Icons.dark_mode),
+            onPressed: () => widget.toggletheme(false),
+          ),
+        ],
       ),
       body: Center(
         child: AnimatedOpacity(
