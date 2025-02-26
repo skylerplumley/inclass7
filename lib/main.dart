@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,11 +40,38 @@ class FadingTextAnimation extends StatefulWidget {
 }
 
 class _FadingTextAnimationState extends State<FadingTextAnimation> {
+  Color textcolor = Colors.black;
   bool _isVisible = true;
+
   void toggleVisibility() {
     setState(() {
       _isVisible = !_isVisible;
     });
+  }
+
+  void pickcolor() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Pick a color'),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: textcolor,
+            onColorChanged: (color) {
+              setState(() {
+                textcolor = color;
+              });
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text('Enter'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -60,6 +88,10 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
             icon: Icon(Icons.dark_mode),
             onPressed: () => widget.toggletheme(false),
           ),
+          IconButton(
+            icon: Icon(Icons.palette),
+            onPressed: pickcolor,
+          ),
         ],
       ),
       body: Center(
@@ -68,7 +100,7 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
           duration: Duration(seconds: 1),
           child: Text(
             'Hello, Flutter!',
-            style: TextStyle(fontSize: 24),
+            style: TextStyle(fontSize: 24, color: textcolor),
           ),
         ),
       ),
